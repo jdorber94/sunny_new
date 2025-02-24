@@ -24,10 +24,23 @@ const XP_PER_COMPLETION = 20;
 const MAX_DAILY_XP = 100;
 
 const calculateLevel = (xp: number) => {
-  const baseXP = 100;
-  const level = Math.floor(xp / baseXP) + 1;
-  const currentLevelXP = xp % baseXP;
-  const nextLevelXP = baseXP;
+  // Each level requires double XP of the previous level
+  const levels = [0, 60, 120, 240, 480, 960, 1920, 3840, 7680];
+  let level = 1;
+  
+  // Find current level
+  for (let i = 1; i < levels.length; i++) {
+    if (xp >= levels[i]) {
+      level = i + 1;
+    } else {
+      break;
+    }
+  }
+
+  // Calculate progress to next level
+  const currentLevelXP = xp - levels[level - 1];
+  const nextLevelXP = levels[level] - levels[level - 1];
+
   return { level, currentLevelXP, nextLevelXP };
 };
 
@@ -149,36 +162,28 @@ export default function HabitTracker() {
     <div className="grid place-items-center min-h-screen">
       <div className="w-full max-w-4xl px-4 py-6 sm:py-12">
         <div className="text-center mb-8 sm:mb-16">
-          <h1 className="text-4xl sm:text-5xl font-bold text-slate-700 mb-2">
-            Habit Tracker
+          <h1 className="text-4xl sm:text-5xl font-bold mb-2 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-transparent bg-clip-text">
+            Daily Quest
           </h1>
-          <p className="text-slate-500 text-base sm:text-lg">Build better habits, one day at a time</p>
+          <p className="text-slate-500 text-base sm:text-lg">Build better habits, one quest at a time</p>
         </div>
 
         {/* Level Overview */}
         <div className="glass-card mb-8">
-          <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-6">
-            <div className="text-center sm:text-left">
-              <p className="text-sm uppercase tracking-wider text-slate-400 mb-1">
-                Current Level
-              </p>
-              <div className="flex items-center gap-2">
-                <span className="text-4xl font-bold text-slate-700">
-                  {level}
-                </span>
-                <div className="bg-blue-500/10 text-blue-600 px-2 py-1 rounded-full text-sm">
-                  {currentLevelXP}/{nextLevelXP} XP
-                </div>
+          <div className="flex flex-col items-center gap-4">
+            <div className="flex items-center gap-3">
+              <span className="text-5xl font-bold text-slate-700">
+                Lvl {level}
+              </span>
+              <div className="bg-blue-500/10 text-blue-600 px-3 py-1.5 rounded-full text-sm font-medium">
+                {currentLevelXP}/{nextLevelXP} XP
               </div>
             </div>
-            <div className="flex gap-2 items-center">
-              <span className="text-sm text-slate-500">Level Progress</span>
-              <div className="w-32 sm:w-48 h-2 bg-slate-100/50 rounded-full overflow-hidden">
-                <div 
-                  className="h-full bg-gradient-to-r from-blue-400 to-indigo-400"
-                  style={{ width: `${(currentLevelXP / nextLevelXP) * 100}%` }}
-                />
-              </div>
+            <div className="w-full h-3 bg-slate-100/50 rounded-full overflow-hidden">
+              <div 
+                className="h-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 transition-all duration-300"
+                style={{ width: `${(currentLevelXP / nextLevelXP) * 100}%` }}
+              />
             </div>
           </div>
         </div>
