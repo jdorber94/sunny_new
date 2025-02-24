@@ -1,6 +1,6 @@
 import type { Config } from "tailwindcss";
 
-export default {
+const config: Config = {
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -12,7 +12,19 @@ export default {
         background: "var(--background)",
         foreground: "var(--foreground)",
       },
+      animation: {
+        'gradient': 'gradient 15s ease infinite',
+        'sparkle': 'sparkle 1s ease-in-out',
+        'progress-celebration': 'progress-celebration 1s ease-in-out',
+        'scale-bounce': 'scale-bounce 0.5s ease-in-out',
+      },
     },
   },
-  plugins: [],
-} satisfies Config;
+  safelist: [
+    'text-green-400',
+    'text-blue-400',
+    'text-red-400',
+  ],
+};
+
+export default config;

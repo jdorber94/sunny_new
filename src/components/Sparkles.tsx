@@ -6,19 +6,22 @@ interface SparkleProps {
   color?: string;
 }
 
-export function Sparkles({ color = 'currentColor' }: SparkleProps) {
+export function Sparkles({ color = 'blue-400' }: SparkleProps) {
   return (
     <div className="absolute inset-0 pointer-events-none">
       {[...Array(6)].map((_, i) => (
-        <span
+        <div
           key={i}
-          className={`absolute inline-block w-1 h-1 rounded-full bg-${color} opacity-0`}
+          className={`absolute animate-[sparkle_1s_ease-in-out] text-${color}`}
           style={{
-            left: `${50 + (Math.random() - 0.5) * 100}%`,
-            top: `${50 + (Math.random() - 0.5) * 100}%`,
-            animation: `sparkle 700ms ${i * 50}ms linear forwards`
-          }}
-        />
+            '--tw-translate-x': `${Math.random() * 100 - 50}%`,
+            '--tw-translate-y': `${Math.random() * 100 - 50}%`,
+            left: `${Math.random() * 100}%`,
+            top: `${Math.random() * 100}%`,
+          } as React.CSSProperties}
+        >
+          ✨
+        </div>
       ))}
     </div>
   );
