@@ -10,7 +10,7 @@ const config: Config = {
     extend: {
       colors: {
         background: "var(--background)",
-        foreground: "var(--foreground)",
+        foreground: "var(--foreground)", 
       },
       animation: {
         'gradient': 'gradient 15s ease infinite',
@@ -24,6 +24,11 @@ const config: Config = {
     'text-green-400',
     'text-blue-400',
     'text-red-400',
+    'from-blue-50',
+    'via-white',
+    'to-indigo-50',
+    'bg-white/60',
+    'hover:bg-white/70',
   ],
 };
 
