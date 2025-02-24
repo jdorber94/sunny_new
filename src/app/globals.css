@@ -58,3 +58,19 @@ body {
 .container-center {
   @apply max-w-4xl mx-auto px-4 sm:px-6 lg:px-8;
 }
+
+/* Responsive utilities */
+@layer utilities {
+  .glass-card {
+    @apply bg-white/60 backdrop-blur-sm rounded-3xl p-6 sm:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] 
+      border border-white/20 transition-all duration-300 hover:bg-white/70;
+  }
+
+  .responsive-grid {
+    @apply grid grid-cols-1 sm:grid-cols-2 gap-4;
+  }
+
+  .responsive-padding {
+    @apply px-4 py-6 sm:px-6 sm:py-8;
+  }
+}

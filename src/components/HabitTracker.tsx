@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Sparkles } from './Sparkles';
+import { WeeklyProgress } from './WeeklyProgress';
 
 interface Habit {
   id: number;
@@ -21,6 +22,14 @@ interface UserStats {
 const MAX_HABITS = 5;
 const XP_PER_COMPLETION = 20;
 const MAX_DAILY_XP = 100;
+
+const calculateLevel = (xp: number) => {
+  const baseXP = 100;
+  const level = Math.floor(xp / baseXP) + 1;
+  const currentLevelXP = xp % baseXP;
+  const nextLevelXP = baseXP;
+  return { level, currentLevelXP, nextLevelXP };
+};
 
 export default function HabitTracker() {
   const [habits, setHabits] = useState<Habit[]>(() => {
@@ -55,6 +64,8 @@ export default function HabitTracker() {
 
   const [celebrateHabitId, setCelebrateHabitId] = useState<number | null>(null);
   const [celebrateProgress, setCelebrateProgress] = useState(false);
+
+  const { level, currentLevelXP, nextLevelXP } = calculateLevel(stats.totalXP);
 
   useEffect(() => {
     localStorage.setItem('habits', JSON.stringify(habits));
@@ -136,18 +147,48 @@ export default function HabitTracker() {
 
   return (
     <div className="grid place-items-center min-h-screen">
-      <div className="w-full max-w-4xl px-4 py-12">
-        <div className="text-center mb-16">
-          <h1 className="text-5xl font-bold text-slate-700 mb-2">
+      <div className="w-full max-w-4xl px-4 py-6 sm:py-12">
+        <div className="text-center mb-8 sm:mb-16">
+          <h1 className="text-4xl sm:text-5xl font-bold text-slate-700 mb-2">
             Habit Tracker
           </h1>
-          <p className="text-slate-500 text-lg">Build better habits, one day at a time</p>
+          <p className="text-slate-500 text-base sm:text-lg">Build better habits, one day at a time</p>
         </div>
 
-        {/* Progress Card */}
-        <div className="bg-white/60 backdrop-blur-sm rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] 
-          border border-white/20 mb-12 transition-all duration-300 hover:bg-white/70">
-          <div className="flex justify-between items-center mb-6">
+        {/* Level Overview */}
+        <div className="glass-card mb-8">
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-6">
+            <div className="text-center sm:text-left">
+              <p className="text-sm uppercase tracking-wider text-slate-400 mb-1">
+                Current Level
+              </p>
+              <div className="flex items-center gap-2">
+                <span className="text-4xl font-bold text-slate-700">
+                  {level}
+                </span>
+                <div className="bg-blue-500/10 text-blue-600 px-2 py-1 rounded-full text-sm">
+                  {currentLevelXP}/{nextLevelXP} XP
+                </div>
+              </div>
+            </div>
+            <div className="flex gap-2 items-center">
+              <span className="text-sm text-slate-500">Level Progress</span>
+              <div className="w-32 sm:w-48 h-2 bg-slate-100/50 rounded-full overflow-hidden">
+                <div 
+                  className="h-full bg-gradient-to-r from-blue-400 to-indigo-400"
+                  style={{ width: `${(currentLevelXP / nextLevelXP) * 100}%` }}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Add Weekly Progress after the level overview */}
+        <WeeklyProgress habits={habits} />
+
+        {/* Progress Card - update classes for better mobile */}
+        <div className="glass-card mb-8">
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-6">
             <div>
               <p className="text-sm uppercase tracking-wider text-slate-400 mb-1">
                 Today&apos;s Progress
@@ -179,10 +220,9 @@ export default function HabitTracker() {
           </div>
         </div>
 
-        {/* Add Habit Form */}
-        <div className="bg-white/60 backdrop-blur-sm rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] 
-          border border-white/20 mb-12 transition-all duration-300 hover:bg-white/70">
-          <form onSubmit={addHabit} className="flex gap-4">
+        {/* Add Habit Form - update for mobile */}
+        <div className="glass-card mb-8">
+          <form onSubmit={addHabit} className="flex flex-col sm:flex-row gap-4">
             <input
               type="text"
               value={newHabit}
