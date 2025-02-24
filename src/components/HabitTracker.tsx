@@ -135,7 +135,7 @@ export default function HabitTracker() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+    <div className="w-full">
       <div className="text-center mb-16">
         <h1 className="text-5xl font-bold text-slate-700 mb-2">
           Habit Tracker
