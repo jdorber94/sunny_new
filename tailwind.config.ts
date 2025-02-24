@@ -2,9 +2,9 @@ import type { Config } from "tailwindcss";
 
 const config: Config = {
   content: [
-    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/**/*.{js,ts,jsx,tsx,mdx}",
+    "./app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./components/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
     extend: {
@@ -21,14 +21,22 @@ const config: Config = {
     },
   },
   safelist: [
-    'text-green-400',
-    'text-blue-400',
-    'text-red-400',
+    'bg-white/60',
+    'hover:bg-white/70',
+    'backdrop-blur-sm',
     'from-blue-50',
     'via-white',
     'to-indigo-50',
-    'bg-white/60',
-    'hover:bg-white/70',
+    'from-blue-100',
+    'via-indigo-50',
+    'to-purple-50',
+    'text-green-400',
+    'text-blue-400',
+    'text-red-400',
+    {
+      pattern: /bg-(slate|blue|green|red|indigo)-(50|100|200|300|400|500|600)/,
+      variants: ['hover'],
+    },
   ],
 };
 
