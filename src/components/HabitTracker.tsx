@@ -135,9 +135,9 @@ export default function HabitTracker() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="w-full max-w-4xl space-y-8">
-        <div className="text-center">
+    <div className="grid place-items-center min-h-screen">
+      <div className="w-full max-w-4xl px-4 py-12">
+        <div className="text-center mb-16">
           <h1 className="text-5xl font-bold text-slate-700 mb-2">
             Habit Tracker
           </h1>
