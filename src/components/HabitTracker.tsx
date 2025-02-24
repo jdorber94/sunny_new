@@ -162,7 +162,7 @@ export default function HabitTracker() {
     <div className="grid place-items-center min-h-screen">
       <div className="w-full max-w-4xl px-4 py-6 sm:py-12">
         <div className="text-center mb-8 sm:mb-16">
-          <h1 className="text-4xl sm:text-5xl font-bold mb-2 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-transparent bg-clip-text">
+          <h1 className="text-5xl sm:text-7xl font-extrabold mb-2 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-transparent bg-clip-text tracking-tight">
             quest
           </h1>
           <p className="text-slate-500 text-base sm:text-lg">Build better habits, one quest at a time</p>

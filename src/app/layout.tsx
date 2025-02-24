@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
-import { Inter } from 'next/font/google';
+import { Inter, Montserrat } from 'next/font/google';
 import './globals.css';
+
+const montserrat = Montserrat({ 
+  subsets: ['latin'],
+  weight: ['800'], // Extra bold weight for the title
+});
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -25,7 +30,9 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.ico" />
       </head>
       <body className={inter.className}>
-        {children}
+        <div className={montserrat.className}>
+          {children}
+        </div>
       </body>
     </html>
   );
