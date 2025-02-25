@@ -31,7 +31,7 @@ const calculateLevel = (xp: number) => {
   // Level 3: 180-420 (180 + 240)
   // Level 4: 420-900 (420 + 480)
   // and so on...
-  const getRequiredXP = (level: number) => {
+  const getRequiredXP = (level: number): number => {
     if (level === 1) return 60;
     return getRequiredXP(level - 1) * 2;
   };
