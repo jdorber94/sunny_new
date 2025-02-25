@@ -259,7 +259,7 @@ export default function HabitTracker() {
           </div>
         </div>
 
-        {/* Add Habit Form - update for mobile */}
+        {/* Add Habit Form */}
         <div className="glass-card mb-8">
           <form onSubmit={addHabit} className="flex flex-col sm:flex-row gap-4">
             <input
@@ -267,10 +267,11 @@ export default function HabitTracker() {
               value={newHabit}
               onChange={(e) => setNewHabit(e.target.value)}
               placeholder="What habit would you like to build?"
-              className="flex-1 px-6 py-4 bg-white/80 border border-slate-100 rounded-2xl
-                text-slate-700 placeholder-slate-400
-                focus:ring-2 focus:ring-blue-100 focus:border-blue-200 outline-none
-                transition-all duration-200 text-lg"
+              className="flex-1 px-6 py-4 bg-white/80 border-2 border-slate-100 rounded-2xl
+                text-slate-700 placeholder:text-slate-400 font-medium
+                focus:ring-4 focus:ring-indigo-100 focus:border-indigo-200 outline-none
+                transition-all duration-200 text-lg shadow-sm
+                hover:border-indigo-100 hover:shadow-md"
             />
             <button 
               type="submit" 
@@ -281,10 +282,11 @@ export default function HabitTracker() {
                 }
               }}
               disabled={habits.length >= MAX_HABITS}
-              className={`relative px-8 py-4 rounded-2xl font-medium transition-all duration-200 text-lg
+              className={`relative px-8 py-4 rounded-2xl font-semibold transition-all duration-300 text-lg
                 ${habits.length >= MAX_HABITS 
                   ? 'bg-slate-100 text-slate-400 cursor-not-allowed' 
-                  : 'bg-gradient-to-r from-blue-500 via-indigo-500 to-blue-600 text-white shadow-lg hover:shadow-xl hover:translate-y-[-1px]'
+                  : 'bg-gradient-to-br from-indigo-500 to-purple-500 text-white shadow-lg hover:shadow-xl hover:-translate-y-0.5 hover:scale-105 active:scale-100
+                     border-2 border-transparent hover:border-indigo-200'
                 }`}
             >
               Add Habit
@@ -292,9 +294,9 @@ export default function HabitTracker() {
             </button>
           </form>
           {error && (
-            <p className="mt-3 text-red-400 text-sm">{error}</p>
+            <p className="mt-3 text-red-400 text-sm font-medium">{error}</p>
           )}
-          <div className="mt-4 flex items-center justify-between text-sm text-slate-400">
+          <div className="mt-4 flex items-center justify-between text-sm text-slate-400 font-medium">
             <p>
               {habits.length}/{MAX_HABITS} habits created
             </p>

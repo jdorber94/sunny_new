@@ -129,16 +129,16 @@ export function Navigation() {
       </div>
 
       {/* Mobile Navigation */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-100 px-4 pb-safe">
-        <nav className="flex justify-around">
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-100 px-4 pb-6 pt-2 z-50">
+        <nav className="flex justify-around items-center max-w-md mx-auto">
           {navItems.map((item) => (
             <Link
               key={item.path}
               href={item.path}
-              className={`flex flex-col items-center gap-1 py-3 px-4 transition-all
+              className={`flex flex-col items-center gap-1 py-2 px-3 rounded-xl transition-all
                 ${pathname === item.path
-                  ? 'text-indigo-500'
-                  : 'text-slate-400 hover:text-slate-600'
+                  ? 'text-indigo-500 bg-indigo-50'
+                  : 'text-slate-400 hover:text-slate-600 hover:bg-slate-50'
                 }`}
             >
               {item.icon(pathname === item.path)}
@@ -147,10 +147,10 @@ export function Navigation() {
           ))}
           <Link
             href="/profile"
-            className={`flex flex-col items-center gap-1 py-3 px-4 transition-all
+            className={`flex flex-col items-center gap-1 py-2 px-3 rounded-xl transition-all
               ${pathname === '/profile'
-                ? 'text-indigo-500'
-                : 'text-slate-400 hover:text-slate-600'
+                ? 'text-indigo-500 bg-indigo-50'
+                : 'text-slate-400 hover:text-slate-600 hover:bg-slate-50'
               }`}
           >
             <div className="w-6 h-6 rounded-full bg-gradient-to-br from-indigo-400 to-purple-400 flex items-center justify-center text-white text-xs font-medium">
