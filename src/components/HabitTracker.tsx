@@ -285,8 +285,7 @@ export default function HabitTracker() {
               className={`relative px-8 py-4 rounded-2xl font-semibold transition-all duration-300 text-lg
                 ${habits.length >= MAX_HABITS 
                   ? 'bg-slate-100 text-slate-400 cursor-not-allowed' 
-                  : 'bg-gradient-to-br from-indigo-500 to-purple-500 text-white shadow-lg hover:shadow-xl hover:-translate-y-0.5 hover:scale-105 active:scale-100
-                     border-2 border-transparent hover:border-indigo-200'
+                  : 'bg-gradient-to-br from-indigo-500 to-purple-500 text-white shadow-lg hover:shadow-xl hover:-translate-y-0.5 hover:scale-105 active:scale-100 border-2 border-transparent hover:border-indigo-200'
                 }`}
             >
               Add Habit
