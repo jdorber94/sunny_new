@@ -208,7 +208,7 @@ export default function HabitTracker() {
 
   return (
     <div className="grid place-items-center min-h-screen">
-      <div className="w-full max-w-4xl px-4 py-6 sm:py-12">
+      <div className="w-full max-w-4xl px-4 py-6 sm:py-12 pb-24 lg:pb-6">
         {/* Level Overview */}
         <div className="glass-card mb-8">
           <div className="flex flex-col items-center gap-4">
