@@ -45,6 +45,41 @@ const calculateLevel = (xp: number) => {
   return { level, currentLevelXP, nextLevelXP };
 };
 
+function CheckmarkIcon({ checked }: { checked: boolean }) {
+  return checked ? (
+    <div className="relative">
+      <div className="absolute inset-0 animate-ping opacity-30 rounded-full bg-green-400" />
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="currentColor"
+        className="w-6 h-6"
+      >
+        <path
+          fillRule="evenodd"
+          d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z"
+          clipRule="evenodd"
+        />
+      </svg>
+    </div>
+  ) : (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={2}
+      stroke="currentColor"
+      className="w-6 h-6"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+      />
+    </svg>
+  );
+}
+
 export default function HabitTracker() {
   const [habits, setHabits] = useState<Habit[]>(() => {
     if (typeof window !== 'undefined') {
@@ -198,7 +233,7 @@ export default function HabitTracker() {
         {/* Add Weekly Progress after the level overview */}
         <WeeklyProgress habits={habits} />
 
-        {/* Progress Card - update classes for better mobile */}
+        {/* Progress Card */}
         <div className="glass-card mb-8">
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-6">
             <div>
@@ -206,8 +241,7 @@ export default function HabitTracker() {
                 Today&apos;s Progress
               </p>
               <p className="text-3xl font-bold text-slate-700">
-                {stats.dailyXP.xp}
-                <span className="text-lg text-slate-400 font-normal">/{MAX_DAILY_XP} XP</span>
+                {stats.dailyXP.xp} XP
               </p>
             </div>
             <div>
@@ -215,8 +249,7 @@ export default function HabitTracker() {
                 Total XP
               </p>
               <p className="text-3xl font-bold text-slate-700">
-                {stats.totalXP}
-                <span className="text-lg text-slate-400 font-normal"> XP</span>
+                {stats.totalXP} XP
               </p>
             </div>
           </div>
@@ -339,9 +372,9 @@ export default function HabitTracker() {
                       onClick={() => toggleHabit(habit.id)}
                       disabled={!isToday(selectedDate) || (!isHabitCompletedForDate(habit, selectedDate) && stats.dailyXP.xp >= MAX_DAILY_XP)}
                       className={`w-12 h-12 rounded-xl flex items-center justify-center 
-                        transition-all duration-200
+                        transition-all duration-300
                         ${isHabitCompletedForDate(habit, selectedDate)
-                          ? 'bg-white/80 backdrop-blur-sm border-2 border-green-100 text-green-500 hover:text-white hover:scale-105 active:scale-95 hover:shadow-lg hover:border-transparent hover:bg-gradient-to-r hover:from-green-400 hover:to-emerald-400'
+                          ? 'bg-gradient-to-br from-green-400 to-emerald-500 text-white shadow-lg shadow-green-500/20 hover:shadow-xl hover:shadow-green-500/30 hover:-translate-y-0.5'
                           : !isToday(selectedDate)
                           ? 'bg-slate-100 text-slate-400 cursor-not-allowed'
                           : stats.dailyXP.xp >= MAX_DAILY_XP
@@ -349,28 +382,7 @@ export default function HabitTracker() {
                           : 'bg-white/80 backdrop-blur-sm border-2 border-slate-100 text-slate-400 hover:text-white hover:scale-105 active:scale-95 hover:shadow-lg hover:border-transparent hover:bg-gradient-to-r hover:from-blue-400 hover:to-indigo-400'
                         }`}
                     >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={2.5}
-                        stroke="currentColor"
-                        className="w-6 h-6"
-                      >
-                        {isHabitCompletedForDate(habit, selectedDate) ? (
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M4.5 12.75l6 6 9-13.5"
-                          />
-                        ) : (
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M12 6v12m6-6H6"
-                          />
-                        )}
-                      </svg>
+                      <CheckmarkIcon checked={isHabitCompletedForDate(habit, selectedDate)} />
                     </button>
                     <button
                       onClick={() => deleteHabit(habit.id)}
