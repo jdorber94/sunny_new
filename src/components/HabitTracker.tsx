@@ -26,21 +26,27 @@ const MAX_DAILY_XP = 100;
 
 const calculateLevel = (xp: number) => {
   // Each level requires double XP of the previous level
-  const levels = [0, 60, 120, 240, 480, 960, 1920, 3840, 7680];
+  // Level 1: 0-60
+  // Level 2: 60-180 (60 + 120)
+  // Level 3: 180-420 (180 + 240)
+  // Level 4: 420-900 (420 + 480)
+  // and so on...
+  const getRequiredXP = (level: number) => {
+    if (level === 1) return 60;
+    return getRequiredXP(level - 1) * 2;
+  };
+
   let level = 1;
-  
-  // Find current level
-  for (let i = 1; i < levels.length; i++) {
-    if (xp >= levels[i]) {
-      level = i + 1;
-    } else {
-      break;
-    }
+  let totalRequired = 60; // First level requirement
+
+  while (xp >= totalRequired) {
+    level++;
+    totalRequired += getRequiredXP(level);
   }
 
-  // Calculate progress to next level
-  const currentLevelXP = xp - levels[level - 1];
-  const nextLevelXP = levels[level] - levels[level - 1];
+  const prevLevelXP = level === 1 ? 0 : totalRequired - getRequiredXP(level);
+  const currentLevelXP = xp - prevLevelXP;
+  const nextLevelXP = getRequiredXP(level);
 
   return { level, currentLevelXP, nextLevelXP };
 };
@@ -230,40 +236,8 @@ export default function HabitTracker() {
           </div>
         </div>
 
-        {/* Add Weekly Progress after the level overview */}
+        {/* Weekly Progress */}
         <WeeklyProgress habits={habits} />
-
-        {/* Progress Card */}
-        <div className="glass-card mb-8">
-          <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-6">
-            <div>
-              <p className="text-sm uppercase tracking-wider text-slate-400 mb-1">
-                Today&apos;s Progress
-              </p>
-              <p className="text-3xl font-bold text-slate-700">
-                {stats.dailyXP.xp} XP
-              </p>
-            </div>
-            <div>
-              <p className="text-sm uppercase tracking-wider text-slate-400 mb-1">
-                Total XP
-              </p>
-              <p className="text-3xl font-bold text-slate-700">
-                {stats.totalXP} XP
-              </p>
-            </div>
-          </div>
-          
-          {/* Progress Bar */}
-          <div className="relative w-full h-4 bg-slate-100/50 rounded-full overflow-hidden">
-            <div 
-              className={`absolute top-0 left-0 h-full bg-gradient-to-r from-blue-400 via-indigo-400 to-blue-500 
-                transition-all duration-300 ease-out
-                ${celebrateProgress ? 'animate-[progress-celebration_1s_ease-in-out]' : ''}`}
-              style={{ width: `${(stats.dailyXP.xp / MAX_DAILY_XP) * 100}%` }}
-            />
-          </div>
-        </div>
 
         {/* Add Date Navigation */}
         <div className="glass-card mb-8">
