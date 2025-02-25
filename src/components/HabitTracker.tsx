@@ -51,15 +51,20 @@ const calculateLevel = (xp: number) => {
   return { level, currentLevelXP, nextLevelXP };
 };
 
-function CheckmarkIcon({ checked }: { checked: boolean }) {
+function CheckmarkIcon({ checked, animate = false }: { checked: boolean; animate?: boolean }) {
   return checked ? (
     <div className="relative">
-      <div className="absolute inset-0 animate-ping opacity-30 rounded-full bg-green-400" />
+      {animate && (
+        <>
+          <div className="absolute inset-0 animate-ping opacity-30 rounded-full bg-[#00B971]" />
+          <div className="absolute inset-[-8px] animate-scale-up rounded-full border-2 border-[#00B971]" />
+        </>
+      )}
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 24 24"
         fill="currentColor"
-        className="w-6 h-6"
+        className={`w-6 h-6 ${animate ? 'animate-bounce-small' : ''}`}
       >
         <path
           fillRule="evenodd"
@@ -210,68 +215,37 @@ export default function HabitTracker() {
     <div className="grid place-items-center min-h-screen">
       <div className="w-full max-w-4xl px-4 py-6 sm:py-12 pb-24 lg:pb-6">
         {/* Level Overview */}
-        <div className="glass-card mb-8">
-          <div className="flex flex-col items-center gap-4">
+        <div className="glass-card mb-6">
+          <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
-              <span className="text-5xl font-bold text-slate-700">
-                Lvl {level}
+              <span className="text-3xl font-medium text-black">
+                Level {level}
               </span>
-              <div className="bg-blue-500/10 text-blue-600 px-3 py-1.5 rounded-full text-sm font-medium">
+              <div className="text-sm text-[#6B7280]">
                 {currentLevelXP}/{nextLevelXP} XP
               </div>
             </div>
-            <div className="w-full h-3 bg-slate-100/50 rounded-full overflow-hidden">
-              <div 
-                className="h-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 transition-all duration-300"
-                style={{ width: `${(currentLevelXP / nextLevelXP) * 100}%` }}
-              />
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-medium text-[#00B971]">+{stats.dailyXP.xp} today</span>
             </div>
+          </div>
+          <div className="h-1.5 bg-[#F3F4F6] rounded-full overflow-hidden">
+            <div 
+              className="h-full bg-black transition-all duration-300"
+              style={{ width: `${(currentLevelXP / nextLevelXP) * 100}%` }}
+            />
           </div>
         </div>
 
-        {/* Weekly Progress */}
-        <WeeklyProgress habits={habits} />
-
-        {/* Add Date Navigation */}
-        <div className="glass-card mb-8">
-          <div className="flex items-center justify-between">
-            <button
-              onClick={() => setSelectedDate(prev => subDays(prev, 1))}
-              className="p-2 rounded-lg hover:bg-slate-100 text-slate-600"
-            >
-              ←
-            </button>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-slate-700 mb-1">
-                {isToday(selectedDate) ? 'Today' : format(selectedDate, 'EEEE')}
-              </div>
-              <div className="text-sm text-slate-500">
-                {format(selectedDate, 'MMMM d, yyyy')}
-              </div>
-            </div>
-            <button
-              onClick={() => setSelectedDate(prev => addDays(prev, 1))}
-              className="p-2 rounded-lg hover:bg-slate-100 text-slate-600"
-              disabled={isToday(selectedDate)}
-            >
-              →
-            </button>
-          </div>
-        </div>
-
-        {/* Add Habit Form */}
+        {/* Add Habit Form - Moved up */}
         <div className="glass-card mb-8">
           <form onSubmit={addHabit} className="flex flex-col sm:flex-row gap-4">
             <input
               type="text"
               value={newHabit}
               onChange={(e) => setNewHabit(e.target.value)}
-              placeholder="What habit would you like to build?"
-              className="flex-1 px-6 py-4 bg-white/80 border-2 border-slate-100 rounded-2xl
-                text-slate-700 placeholder:text-slate-400 font-medium
-                focus:ring-4 focus:ring-indigo-100 focus:border-indigo-200 outline-none
-                transition-all duration-200 text-lg shadow-sm
-                hover:border-indigo-100 hover:shadow-md"
+              placeholder="Add a new habit"
+              className="input-field w-full text-base"
             />
             <button 
               type="submit" 
@@ -305,6 +279,33 @@ export default function HabitTracker() {
           </div>
         </div>
 
+        {/* Date Navigation - Moved down */}
+        <div className="glass-card mb-8">
+          <div className="flex items-center justify-between">
+            <button
+              onClick={() => setSelectedDate(prev => subDays(prev, 1))}
+              className="p-2 rounded-lg hover:bg-slate-100 text-slate-600"
+            >
+              ←
+            </button>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-slate-700 mb-1">
+                {isToday(selectedDate) ? 'Today' : format(selectedDate, 'EEEE')}
+              </div>
+              <div className="text-sm text-slate-500">
+                {format(selectedDate, 'MMMM d, yyyy')}
+              </div>
+            </div>
+            <button
+              onClick={() => setSelectedDate(prev => addDays(prev, 1))}
+              className="p-2 rounded-lg hover:bg-slate-100 text-slate-600"
+              disabled={isToday(selectedDate)}
+            >
+              →
+            </button>
+          </div>
+        </div>
+
         {/* Habits List */}
         {habits.length > 0 && (
           <div className="space-y-4">
@@ -317,80 +318,50 @@ export default function HabitTracker() {
                 {celebrateHabitId === habit.id && (
                   <Sparkles color={isHabitCompletedForDate(habit, selectedDate) ? 'green-400' : 'blue-400'} />
                 )}
-                <div className="flex justify-between items-center">
+                <div className="flex items-center gap-4">
                   <div className="flex-1">
-                    <h3 className="text-xl font-semibold text-slate-700 mb-2">
-                      {habit.name}
-                    </h3>
-                    <div className="w-full h-1.5 bg-slate-100/50 rounded-full overflow-hidden mb-3">
+                    <div className="flex items-center gap-2 mb-2">
+                      <h3 className="text-base font-medium text-black">
+                        {habit.name}
+                      </h3>
+                      {habit.logs.length >= 3 && (
+                        <div className="flex items-center gap-1 px-2 py-0.5 bg-[#FEF3C7] rounded-full">
+                          <span className="text-[#D97706] text-xs">🔥 {habit.logs.length}</span>
+                        </div>
+                      )}
+                    </div>
+                    <div className="w-full h-2.5 bg-slate-100 rounded-full mb-2 overflow-hidden">
                       <div 
-                        className={`h-full transition-all duration-300
+                        className={`h-full transition-all duration-500 ease-out
                           ${isHabitCompletedForDate(habit, selectedDate)
-                            ? 'bg-gradient-to-r from-green-400 to-emerald-500'
-                            : 'bg-gradient-to-r from-blue-400 to-indigo-400'
+                            ? 'bg-gradient-to-r from-emerald-400 to-green-500 shadow-[0_0_12px_rgba(16,185,129,0.4)]'
+                            : 'bg-gradient-to-r from-blue-400 to-indigo-500'
                           }`}
                         style={{ 
                           width: `${(habit.logs.length / 30) * 100}%`,
-                          transition: 'width 0.5s ease-out'
+                          transform: isHabitCompletedForDate(habit, selectedDate) ? 'scale(1.02)' : 'scale(1)'
                         }}
                       />
                     </div>
-                    <div className="flex items-center gap-3">
-                      <span className="inline-flex items-center px-3 py-1 rounded-full 
-                        text-sm font-medium bg-slate-100/50 backdrop-blur-sm
-                        text-slate-600">
-                        {habit.logs.length} days
-                      </span>
-                      <span className="inline-flex items-center px-3 py-1 rounded-full 
-                        text-sm font-medium bg-blue-50/50 backdrop-blur-sm
-                        text-blue-600">
-                        {habit.xp} XP
+                    <div className="flex items-center gap-2 text-sm text-[#6B7280]">
+                      <span>{habit.logs.length} days</span>
+                      <span>•</span>
+                      <span className="flex items-center gap-1">
+                        <span className="text-[#00B971]">{habit.xp}</span> XP
                       </span>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <button
-                      onClick={() => toggleHabit(habit.id)}
-                      disabled={!isToday(selectedDate) || (!isHabitCompletedForDate(habit, selectedDate) && stats.dailyXP.xp >= MAX_DAILY_XP)}
-                      className={`w-12 h-12 rounded-xl flex items-center justify-center 
-                        transition-all duration-300
-                        ${isHabitCompletedForDate(habit, selectedDate)
-                          ? 'bg-gradient-to-br from-green-400 to-emerald-500 text-white shadow-lg shadow-green-500/20 hover:shadow-xl hover:shadow-green-500/30 hover:-translate-y-0.5'
-                          : !isToday(selectedDate)
-                          ? 'bg-slate-100 text-slate-400 cursor-not-allowed'
-                          : stats.dailyXP.xp >= MAX_DAILY_XP
-                          ? 'bg-slate-100 text-slate-400 cursor-not-allowed'
-                          : 'bg-white/80 backdrop-blur-sm border-2 border-slate-100 text-slate-400 hover:text-white hover:scale-105 active:scale-95 hover:shadow-lg hover:border-transparent hover:bg-gradient-to-r hover:from-blue-400 hover:to-indigo-400'
-                        }`}
-                    >
-                      <CheckmarkIcon checked={isHabitCompletedForDate(habit, selectedDate)} />
-                    </button>
-                    <button
-                      onClick={() => deleteHabit(habit.id)}
-                      className="w-12 h-12 rounded-xl flex items-center justify-center
-                        bg-white/80 backdrop-blur-sm border-2 border-red-100
-                        text-red-400 hover:text-white
-                        hover:bg-gradient-to-r hover:from-red-400 hover:to-red-500
-                        hover:border-transparent hover:shadow-lg
-                        hover:scale-105 active:scale-95
-                        transition-all duration-200 text-lg"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={2}
-                        stroke="currentColor"
-                        className="w-6 h-6"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
-                        />
-                      </svg>
-                    </button>
-                  </div>
+                  <button
+                    onClick={() => toggleHabit(habit.id)}
+                    className={`w-10 h-10 rounded-xl flex items-center justify-center
+                      transition-all duration-200
+                      ${isHabitCompletedForDate(habit, selectedDate)
+                        ? 'bg-[#00B971] text-white'
+                        : 'bg-[#F3F4F6] text-[#6B7280] hover:bg-[#E5E7EB]'
+                      }`}
+                  >
+                    <CheckmarkIcon checked={isHabitCompletedForDate(habit, selectedDate)} animate={celebrateProgress} />
+                  </button>
                 </div>
               </div>
             ))}
