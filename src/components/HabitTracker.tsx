@@ -215,23 +215,29 @@ export default function HabitTracker() {
     <div className="grid place-items-center min-h-screen">
       <div className="w-full max-w-4xl px-4 py-6 sm:py-12 pb-24 lg:pb-6">
         {/* Level Overview */}
-        <div className="glass-card mb-6">
+        <div className="glass-card mb-6 hover:shadow-lg transition-all duration-300">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
-              <span className="text-3xl font-medium text-black">
-                Level {level}
-              </span>
-              <div className="text-sm text-[#6B7280]">
-                {currentLevelXP}/{nextLevelXP} XP
+              <div className="flex items-center justify-center w-12 h-12 rounded-xl 
+                bg-gradient-to-br from-indigo-500 to-purple-500 
+                text-white text-xl font-bold shadow-lg">
+                {level}
+              </div>
+              <div>
+                <span className="text-2xl font-bold text-black">
+                  Level {level}
+                </span>
+                <div className="text-sm text-[#6B7280] flex items-center gap-2">
+                  <span>{currentLevelXP}/{nextLevelXP} XP</span>
+                  <span className="text-[#00B971] font-medium">+{stats.dailyXP.xp} today</span>
+                </div>
               </div>
             </div>
-            <div className="flex items-center gap-2">
-              <span className="text-sm font-medium text-[#00B971]">+{stats.dailyXP.xp} today</span>
-            </div>
           </div>
-          <div className="h-1.5 bg-[#F3F4F6] rounded-full overflow-hidden">
+          <div className="h-2 bg-[#F3F4F6] rounded-full overflow-hidden shadow-inner">
             <div 
-              className="h-full bg-black transition-all duration-300"
+              className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all duration-300
+                shadow-[0_0_12px_rgba(99,102,241,0.4)]"
               style={{ width: `${(currentLevelXP / nextLevelXP) * 100}%` }}
             />
           </div>
@@ -312,7 +318,7 @@ export default function HabitTracker() {
             {habits.map(habit => (
               <div 
                 key={habit.id} 
-                className={`relative glass-card
+                className={`relative glass-card hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300
                   ${celebrateHabitId === habit.id ? 'animate-[scale-bounce_0.5s_ease-in-out]' : ''}`}
               >
                 {celebrateHabitId === habit.id && (
@@ -330,12 +336,12 @@ export default function HabitTracker() {
                         </div>
                       )}
                     </div>
-                    <div className="w-full h-2.5 bg-slate-100 rounded-full mb-2 overflow-hidden">
+                    <div className="w-full h-3 bg-[#F3F4F6] rounded-full mb-2 overflow-hidden shadow-inner">
                       <div 
                         className={`h-full transition-all duration-500 ease-out
                           ${isHabitCompletedForDate(habit, selectedDate)
-                            ? 'bg-gradient-to-r from-emerald-400 to-green-500 shadow-[0_0_12px_rgba(16,185,129,0.4)]'
-                            : 'bg-gradient-to-r from-blue-400 to-indigo-500'
+                            ? 'bg-gradient-to-r from-emerald-400 to-green-500 shadow-[0_0_20px_rgba(16,185,129,0.4)]'
+                            : 'bg-gradient-to-r from-indigo-400 via-blue-500 to-indigo-500 shadow-[0_0_12px_rgba(99,102,241,0.2)]'
                           }`}
                         style={{ 
                           width: `${(habit.logs.length / 30) * 100}%`,
@@ -351,17 +357,44 @@ export default function HabitTracker() {
                       </span>
                     </div>
                   </div>
-                  <button
-                    onClick={() => toggleHabit(habit.id)}
-                    className={`w-10 h-10 rounded-xl flex items-center justify-center
-                      transition-all duration-200
-                      ${isHabitCompletedForDate(habit, selectedDate)
-                        ? 'bg-[#00B971] text-white'
-                        : 'bg-[#F3F4F6] text-[#6B7280] hover:bg-[#E5E7EB]'
-                      }`}
-                  >
-                    <CheckmarkIcon checked={isHabitCompletedForDate(habit, selectedDate)} animate={celebrateProgress} />
-                  </button>
+                  <div className="flex items-center gap-3">
+                    <button
+                      onClick={() => toggleHabit(habit.id)}
+                      className={`w-10 h-10 rounded-xl flex items-center justify-center
+                        transition-all duration-200
+                        ${isHabitCompletedForDate(habit, selectedDate)
+                          ? 'bg-[#00B971] text-white'
+                          : 'bg-[#F3F4F6] text-[#6B7280] hover:bg-[#E5E7EB]'
+                        }`}
+                    >
+                      <CheckmarkIcon checked={isHabitCompletedForDate(habit, selectedDate)} animate={celebrateProgress} />
+                    </button>
+                    <button
+                      onClick={() => deleteHabit(habit.id)}
+                      className="w-10 h-10 rounded-xl flex items-center justify-center
+                        bg-white/80 backdrop-blur-sm border-2 border-red-100
+                        text-red-400 hover:text-white
+                        hover:bg-gradient-to-r hover:from-red-400 hover:to-red-500
+                        hover:border-transparent hover:shadow-lg
+                        hover:scale-105 active:scale-95
+                        transition-all duration-200"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={2}
+                        stroke="currentColor"
+                        className="w-5 h-5"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                        />
+                      </svg>
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}

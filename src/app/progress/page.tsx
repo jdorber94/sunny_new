@@ -14,9 +14,9 @@ export default function ProgressPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 p-4 pb-24 lg:pb-6">
       <div className="max-w-4xl mx-auto py-8">
-        <h1 className="text-3xl font-bold text-slate-700 mb-8">Progress Overview</h1>
+        <h1 className="text-3xl font-bold text-slate-700 mb-8">Progress</h1>
         <WeeklyProgress habits={habits} />
         {/* Add more progress visualizations here */}
       </div>

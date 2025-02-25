@@ -61,21 +61,28 @@ body {
 
 /* Custom styles */
 .glass-card {
-  @apply bg-white rounded-2xl shadow-sm border border-[#E5E7EB]
-    transition-all duration-200;
+  @apply bg-white/90 backdrop-blur-sm rounded-2xl p-6 
+    border border-white/40 transition-all duration-200
+    shadow-[0_8px_30px_rgba(0,0,0,0.06)]
+    hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)]
+    hover:bg-white/95;
 }
 
 .input-field {
-  @apply bg-white border border-[#E5E7EB] rounded-xl px-4 py-3
-    text-[#18191B] placeholder:text-[#9CA3AF]
-    focus:ring-2 focus:ring-black/5 focus:border-black/20
+  @apply bg-white/90 border-2 border-[#E5E7EB] rounded-xl px-4 py-3
+    text-[#18191B] placeholder:text-[#9CA3AF] font-medium
+    focus:ring-4 focus:ring-indigo-100/30 focus:border-indigo-300
+    hover:border-indigo-200 hover:shadow-md
     outline-none transition-all duration-200;
 }
 
 .button-primary {
-  @apply bg-black text-white rounded-xl px-4 py-3
-    hover:bg-black/90 active:bg-black/80
-    disabled:bg-[#E5E7EB] disabled:text-[#9CA3AF]
+  @apply bg-gradient-to-br from-indigo-500 to-purple-500 
+    text-white rounded-xl px-4 py-3 font-medium
+    shadow-lg shadow-indigo-500/20
+    hover:shadow-xl hover:shadow-indigo-500/30 hover:-translate-y-0.5
+    active:shadow-md active:translate-y-0
+    disabled:bg-[#E5E7EB] disabled:text-[#9CA3AF] disabled:shadow-none
     transition-all duration-200;
 }
 
@@ -130,4 +137,14 @@ body {
 
 .animate-bounce-small {
   animation: bounce-small 0.3s ease-in-out;
+}
+
+/* Add new animation for level up */
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 12px rgba(99,102,241,0.4); }
+  50% { box-shadow: 0 0 24px rgba(99,102,241,0.6); }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s infinite;
 }
