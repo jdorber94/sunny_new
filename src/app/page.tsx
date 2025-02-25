@@ -1,5 +1,7 @@
-import { redirect } from 'next/navigation';
+'use client';
+
+import HabitTracker from '@/components/HabitTracker';
 
 export default function Home() {
-  redirect('/habits');
+  return <HabitTracker />;
 }

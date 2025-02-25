@@ -1,9 +1,9 @@
 'use client';
 
-import { QuestHistory } from '@/components/QuestHistory';
+import { WeeklyProgress } from '@/components/WeeklyProgress';
 import { useState, useEffect } from 'react';
 
-export default function HistoryPage() {
+export default function ProgressPage() {
   const [habits, setHabits] = useState([]);
 
   useEffect(() => {
@@ -16,8 +16,9 @@ export default function HistoryPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 p-4">
       <div className="max-w-4xl mx-auto py-8">
-        <h1 className="text-3xl font-bold text-slate-700 mb-8">History</h1>
-        <QuestHistory habits={habits} />
+        <h1 className="text-3xl font-bold text-slate-700 mb-8">Progress Overview</h1>
+        <WeeklyProgress habits={habits} />
+        {/* Add more progress visualizations here */}
       </div>
     </div>
   );

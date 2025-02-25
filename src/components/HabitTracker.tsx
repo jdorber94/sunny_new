@@ -324,10 +324,23 @@ export default function HabitTracker() {
                   <Sparkles color={isHabitCompletedForDate(habit, selectedDate) ? 'green-400' : 'blue-400'} />
                 )}
                 <div className="flex justify-between items-center">
-                  <div>
+                  <div className="flex-1">
                     <h3 className="text-xl font-semibold text-slate-700 mb-2">
                       {habit.name}
                     </h3>
+                    <div className="w-full h-1.5 bg-slate-100/50 rounded-full overflow-hidden mb-3">
+                      <div 
+                        className={`h-full transition-all duration-300
+                          ${isHabitCompletedForDate(habit, selectedDate)
+                            ? 'bg-gradient-to-r from-green-400 to-emerald-500'
+                            : 'bg-gradient-to-r from-blue-400 to-indigo-400'
+                          }`}
+                        style={{ 
+                          width: `${(habit.logs.length / 30) * 100}%`,
+                          transition: 'width 0.5s ease-out'
+                        }}
+                      />
+                    </div>
                     <div className="flex items-center gap-3">
                       <span className="inline-flex items-center px-3 py-1 rounded-full 
                         text-sm font-medium bg-slate-100/50 backdrop-blur-sm
