@@ -106,6 +106,26 @@ export function Navigation() {
             ))}
           </ul>
         </nav>
+
+        {/* Desktop Profile Section */}
+        <div className="mt-auto pt-4 border-t border-slate-100">
+          <Link
+            href="/profile"
+            className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all
+              ${pathname === '/profile'
+                ? 'bg-indigo-50 text-indigo-500'
+                : 'text-slate-600 hover:bg-slate-50'
+              }`}
+          >
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-400 to-purple-400 flex items-center justify-center text-white font-medium">
+              JD
+            </div>
+            <div className="flex-1">
+              <div className="font-medium">John Doe</div>
+              <div className="text-sm text-slate-400">View Profile</div>
+            </div>
+          </Link>
+        </div>
       </div>
 
       {/* Mobile Navigation */}
@@ -125,6 +145,19 @@ export function Navigation() {
               <span className="text-xs font-medium">{item.name}</span>
             </Link>
           ))}
+          <Link
+            href="/profile"
+            className={`flex flex-col items-center gap-1 py-3 px-4 transition-all
+              ${pathname === '/profile'
+                ? 'text-indigo-500'
+                : 'text-slate-400 hover:text-slate-600'
+              }`}
+          >
+            <div className="w-6 h-6 rounded-full bg-gradient-to-br from-indigo-400 to-purple-400 flex items-center justify-center text-white text-xs font-medium">
+              JD
+            </div>
+            <span className="text-xs font-medium">Profile</span>
+          </Link>
         </nav>
       </div>
     </>
