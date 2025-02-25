@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { Sparkles } from './Sparkles';
 import { WeeklyProgress } from './WeeklyProgress';
+import { format, addDays, subDays, isToday } from 'date-fns';
 
 interface Habit {
   id: number;
@@ -80,6 +81,8 @@ export default function HabitTracker() {
 
   const { level, currentLevelXP, nextLevelXP } = calculateLevel(stats.totalXP);
 
+  const [selectedDate, setSelectedDate] = useState(() => new Date());
+
   useEffect(() => {
     localStorage.setItem('habits', JSON.stringify(habits));
     localStorage.setItem('habitStats', JSON.stringify(stats));
@@ -107,11 +110,11 @@ export default function HabitTracker() {
   };
 
   const toggleHabit = (habitId: number) => {
-    const today = new Date().toISOString().split('T')[0];
+    const dateStr = format(selectedDate, 'yyyy-MM-dd');
     
     setHabits(habits.map(habit => {
       if (habit.id === habitId) {
-        const hasLog = habit.logs.includes(today);
+        const hasLog = habit.logs.includes(dateStr);
         
         if (!hasLog && stats.dailyXP.xp < MAX_DAILY_XP) {
           setCelebrateHabitId(habitId);
@@ -124,28 +127,28 @@ export default function HabitTracker() {
           setStats(prev => ({
             totalXP: prev.totalXP + XP_PER_COMPLETION,
             dailyXP: {
-              date: today,
+              date: dateStr,
               xp: prev.dailyXP.xp + XP_PER_COMPLETION
             }
           }));
 
           return {
             ...habit,
-            logs: [...habit.logs, today],
+            logs: [...habit.logs, dateStr],
             xp: habit.xp + XP_PER_COMPLETION
           };
         } else if (hasLog) {
           setStats(prev => ({
             totalXP: prev.totalXP - XP_PER_COMPLETION,
             dailyXP: {
-              date: today,
+              date: dateStr,
               xp: prev.dailyXP.xp - XP_PER_COMPLETION
             }
           }));
 
           return {
             ...habit,
-            logs: habit.logs.filter(date => date !== today),
+            logs: habit.logs.filter(date => date !== dateStr),
             xp: habit.xp - XP_PER_COMPLETION
           };
         }
@@ -158,12 +161,16 @@ export default function HabitTracker() {
     setHabits(habits.filter(habit => habit.id !== habitId));
   };
 
+  const isHabitCompletedForDate = (habit: Habit, date: Date) => {
+    return habit.logs.includes(format(date, 'yyyy-MM-dd'));
+  };
+
   return (
     <div className="grid place-items-center min-h-screen">
       <div className="w-full max-w-4xl px-4 py-6 sm:py-12">
         <div className="text-center mb-8 sm:mb-16">
           <h1 className="text-5xl sm:text-7xl font-extrabold mb-2 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-transparent bg-clip-text tracking-tight">
-            quest
+            Quest
           </h1>
           <p className="text-slate-500 text-base sm:text-lg">Build better habits, one quest at a time</p>
         </div>
@@ -225,6 +232,33 @@ export default function HabitTracker() {
           </div>
         </div>
 
+        {/* Add Date Navigation */}
+        <div className="glass-card mb-8">
+          <div className="flex items-center justify-between">
+            <button
+              onClick={() => setSelectedDate(prev => subDays(prev, 1))}
+              className="p-2 rounded-lg hover:bg-slate-100 text-slate-600"
+            >
+              ←
+            </button>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-slate-700 mb-1">
+                {isToday(selectedDate) ? 'Today' : format(selectedDate, 'EEEE')}
+              </div>
+              <div className="text-sm text-slate-500">
+                {format(selectedDate, 'MMMM d, yyyy')}
+              </div>
+            </div>
+            <button
+              onClick={() => setSelectedDate(prev => addDays(prev, 1))}
+              className="p-2 rounded-lg hover:bg-slate-100 text-slate-600"
+              disabled={isToday(selectedDate)}
+            >
+              →
+            </button>
+          </div>
+        </div>
+
         {/* Add Habit Form - update for mobile */}
         <div className="glass-card mb-8">
           <form onSubmit={addHabit} className="flex flex-col sm:flex-row gap-4">
@@ -276,12 +310,11 @@ export default function HabitTracker() {
             {habits.map(habit => (
               <div 
                 key={habit.id} 
-                className={`relative bg-white/60 backdrop-blur-sm rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)]
-                  border border-white/20 transition-all duration-300 hover:bg-white/70
+                className={`relative glass-card
                   ${celebrateHabitId === habit.id ? 'animate-[scale-bounce_0.5s_ease-in-out]' : ''}`}
               >
                 {celebrateHabitId === habit.id && (
-                  <Sparkles color={habit.logs.includes(new Date().toISOString().split('T')[0]) ? 'green-400' : 'blue-400'} />
+                  <Sparkles color={isHabitCompletedForDate(habit, selectedDate) ? 'green-400' : 'blue-400'} />
                 )}
                 <div className="flex justify-between items-center">
                   <div>
@@ -304,11 +337,13 @@ export default function HabitTracker() {
                   <div className="flex items-center gap-3">
                     <button
                       onClick={() => toggleHabit(habit.id)}
-                      disabled={!habit.logs.includes(new Date().toISOString().split('T')[0]) && stats.dailyXP.xp >= MAX_DAILY_XP}
+                      disabled={!isToday(selectedDate) || (!isHabitCompletedForDate(habit, selectedDate) && stats.dailyXP.xp >= MAX_DAILY_XP)}
                       className={`w-12 h-12 rounded-xl flex items-center justify-center 
                         transition-all duration-200
-                        ${habit.logs.includes(new Date().toISOString().split('T')[0])
+                        ${isHabitCompletedForDate(habit, selectedDate)
                           ? 'bg-white/80 backdrop-blur-sm border-2 border-green-100 text-green-500 hover:text-white hover:scale-105 active:scale-95 hover:shadow-lg hover:border-transparent hover:bg-gradient-to-r hover:from-green-400 hover:to-emerald-400'
+                          : !isToday(selectedDate)
+                          ? 'bg-slate-100 text-slate-400 cursor-not-allowed'
                           : stats.dailyXP.xp >= MAX_DAILY_XP
                           ? 'bg-slate-100 text-slate-400 cursor-not-allowed'
                           : 'bg-white/80 backdrop-blur-sm border-2 border-slate-100 text-slate-400 hover:text-white hover:scale-105 active:scale-95 hover:shadow-lg hover:border-transparent hover:bg-gradient-to-r hover:from-blue-400 hover:to-indigo-400'
@@ -322,7 +357,7 @@ export default function HabitTracker() {
                         stroke="currentColor"
                         className="w-6 h-6"
                       >
-                        {habit.logs.includes(new Date().toISOString().split('T')[0]) ? (
+                        {isHabitCompletedForDate(habit, selectedDate) ? (
                           <path
                             strokeLinecap="round"
                             strokeLinejoin="round"
