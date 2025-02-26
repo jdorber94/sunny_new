@@ -105,10 +105,27 @@ export default function HabitTracker() {
   const [stats, setStats] = useState<UserStats>(() => {
     if (typeof window !== 'undefined') {
       const savedStats = localStorage.getItem('habitStats');
-      return savedStats ? JSON.parse(savedStats) : {
+      const today = new Date().toISOString().split('T')[0];
+      
+      if (savedStats) {
+        const parsedStats = JSON.parse(savedStats);
+        // Reset daily XP if it's a new day
+        if (parsedStats.dailyXP.date !== today) {
+          return {
+            totalXP: parsedStats.totalXP,
+            dailyXP: {
+              date: today,
+              xp: 0
+            }
+          };
+        }
+        return parsedStats;
+      }
+      
+      return {
         totalXP: 0,
         dailyXP: {
-          date: new Date().toISOString().split('T')[0],
+          date: today,
           xp: 0
         }
       };
@@ -134,6 +151,19 @@ export default function HabitTracker() {
     localStorage.setItem('habitStats', JSON.stringify(stats));
   }, [habits, stats]);
 
+  useEffect(() => {
+    const today = new Date().toISOString().split('T')[0];
+    if (stats.dailyXP.date !== today) {
+      setStats(prev => ({
+        totalXP: prev.totalXP,
+        dailyXP: {
+          date: today,
+          xp: 0
+        }
+      }));
+    }
+  }, [selectedDate]);
+
   const addHabit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newHabit.trim()) return;
@@ -157,6 +187,10 @@ export default function HabitTracker() {
 
   const toggleHabit = (habitId: number) => {
     const dateStr = format(selectedDate, 'yyyy-MM-dd');
+    const today = new Date().toISOString().split('T')[0];
+    
+    // Only allow toggling if selected date is today
+    if (!isToday(selectedDate)) return;
     
     setHabits(habits.map(habit => {
       if (habit.id === habitId) {
@@ -173,7 +207,7 @@ export default function HabitTracker() {
           setStats(prev => ({
             totalXP: prev.totalXP + XP_PER_COMPLETION,
             dailyXP: {
-              date: dateStr,
+              date: today, // Always use today's date for XP tracking
               xp: prev.dailyXP.xp + XP_PER_COMPLETION
             }
           }));
@@ -187,7 +221,7 @@ export default function HabitTracker() {
           setStats(prev => ({
             totalXP: prev.totalXP - XP_PER_COMPLETION,
             dailyXP: {
-              date: dateStr,
+              date: today, // Always use today's date for XP tracking
               xp: prev.dailyXP.xp - XP_PER_COMPLETION
             }
           }));
